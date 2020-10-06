@@ -12,14 +12,13 @@ async def _fetch(method: Callable, dest: str = "", payload: Union[str, dict] = "
 		if(not api_resp.ok):  # print out the error if the status code is not 200
 			print(api_resp)
 			print(api_resp.text)
-
 		return api_resp
 
 	except req.exceptions.RequestException as err:
 		print(err)
 
 async def get(dest: str = "", payload: Union[str, dict] = ""):
-	return _fetch(req.get, dest, payload)
+	return await _fetch(req.get, dest, payload)
 
 async def put(dest: str = "", payload: Union[str, dict] = ""):
-	return _fetch(req.put, dest, payload)
+	return await _fetch(req.put, dest, payload)

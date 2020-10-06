@@ -2,7 +2,7 @@
 # from lib.input import * # Commandline parser
 
 import sys
-
+from typing import List
 from . import hue_controller as hue # Actual controller 
 
 cmd = "hue"
@@ -11,7 +11,7 @@ def help():
 	print("--Help page--")
 
 	print( "'" + cmd + "' : Display this help page" )
-	print( "'" + cmd + " light (index)' ... : Specify light target, from 1-" + str(hue.controller.countLights()) )
+	print( "'" + cmd + " light (index)' ... : Specify light target, from 1-" + str(hue.count_lights()) )
 	print( "'" + cmd + " lights' ... : Specify all lights\n" )
 
 	print("--Commands--")
@@ -36,23 +36,23 @@ def parseCommand( cmd:list, pos:int, i=-1 ):
 	try:
 		if( cmd[pos] == "on" or cmd[pos] == "off" ):
 			if( index == -1 ):
-				hue.controller.Power( boolConvert[cmd[pos]] )
+				hue.power( boolConvert[cmd[pos]] )
 			else:
-				hue.controller.powerLight( index, boolConvert[cmd[pos]] )
+				hue.power_light( index, boolConvert[cmd[pos]] )
 
 			return
 
 		elif( cmd[pos] == "switch" ):
 			if(index == -1):
-				hue.controller.switchLights()
+				hue.switch_lights()
 			else:
-				hue.controller.switchLight(index)
+				hue.switch_light(index)
 
 			return
 
 		elif( cmd[pos] == "set" ):
 			if( cmd[pos+1] == "preset" ):
-				hue.controller.setPreset( cmd[pos+2], index )
+				hue.set_preset( cmd[pos+2], index )
 				return
 
 			elif( cmd[pos+1] == "color" ):
@@ -60,9 +60,9 @@ def parseCommand( cmd:list, pos:int, i=-1 ):
 					r, g, b = int(cmd[pos+2]), int(cmd[pos+3]), int(cmd[pos+4])
 
 					if( index == -1 ):
-						hue.controller.setAllLightsColor( r, g, b ) # this code is bad
+						hue.set_all_lights_color( r, g, b ) # this code is bad
 					else:
-						hue.controller.setLightColor( index, r, g, b )
+						hue.set_light_color( index, r, g, b )
 
 					return
 				else:
@@ -73,9 +73,9 @@ def parseCommand( cmd:list, pos:int, i=-1 ):
 					bri = int(cmd[pos+2])
 
 					if( index == -1 ):
-						hue.controller.setBrightness(bri)
+						hue.set_brightness(bri)
 					else:
-						hue.controller.setLightBrightness( index, bri )
+						hue.set_light_brightness( index, bri )
 
 					return
 		help() # display help if function did nothing
@@ -85,7 +85,7 @@ def parseCommand( cmd:list, pos:int, i=-1 ):
 		print( "\n\nError: " + str(err) )
 
 
-def parseCommandline():
+def parseCommandline(argv: List[str] = sys.argv):
 	cmd = sys.argv
 
 	if( len(cmd) > 1 ):
@@ -98,9 +98,14 @@ def parseCommandline():
 		help()
 
 
-def init():
-	hue.controller.init() # very important to initialize the controller
-	parseCommandline()
-	hue.controller.end() # also to end it
+hue.init() # very important to initialize the controller
 
-init() # actually call the init function
+def end():
+	hue.end()
+
+# Call init
+
+# Parse command only if called as file
+if __name__ == "__main__":
+	parseCommandline()
+	end()
