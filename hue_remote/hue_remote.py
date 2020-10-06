@@ -3,7 +3,7 @@
 
 import sys
 
-import hue_controller as hue # Actual controller 
+from . import hue_controller as hue # Actual controller 
 
 cmd = "hue"
 
