@@ -66,8 +66,7 @@ def parseCommand( cmd:list, pos:int, i=-1 ):
 
 					return
 				else:
-					print("Error: Missing parameters")
-					help()
+					raise IndexError("Missing parameters")
 
 			elif( cmd[pos+1] == "brightness" ):
 				if( len(cmd) > pos+2 ):
