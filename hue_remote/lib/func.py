@@ -1,23 +1,15 @@
 import colorsys
 
-boolStr = {
-    True: "true",
-    False: "false"
-}
-
-def boolToString(v: bool): # To fix the dumb python syntax
-    return boolStr[v]
-
-def rgbToDecimal( r:int, g:int, b:int ):
+def rgb_to_decimal( r:int, g:int, b:int ):
     return round(r/255, 1), round(g/255, 1), round(b/255, 1)
 
-def svNumFix(n: float):
+def sv_num_fix(n: float):
     return int(round(n*254, 0))
 
-def hueNumFix(n: float):
+def hue_num_fix(n: float):
     return int(round(n*65535, 0))
 
-def rgbToHsv( r:int, g:int, b:int ):
-    R, G, B = rgbToDecimal(r, g, b)
+def rgb_to_hsv( r:int, g:int, b:int ):
+    R, G, B = rgb_to_decimal(r, g, b)
     H, S, V = colorsys.rgb_to_hsv(R, G, B)
-    return hueNumFix(H), svNumFix(S), svNumFix(V)
+    return hue_num_fix(H), sv_num_fix(S), sv_num_fix(V)

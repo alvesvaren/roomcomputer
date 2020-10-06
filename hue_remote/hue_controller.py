@@ -22,7 +22,7 @@ async def get_light(index: int=1):
 
 # Lower level light manipulation (async)
 async def toggle_light(index: int=1, isOn: bool=True):
-	await api_request.put( "/lights/" + str(index) + "/state", '{"on":' + boolToString(isOn) + '}' )
+	await api_request.put( "/lights/" + str(index) + "/state", json.dumps({"on": isOn}))
 
 async def toggle_lights(isOn: bool=True):
 	for key in LIGHTS:
