@@ -18,21 +18,21 @@ async def get_lights():
 	return await api_request.get("/lights")
 
 async def get_light(index: int=1):
-	return await api_request.get( "/lights/" + str(index) )
+	return await api_request.get( f"/lights/{index}" )
 
 # Lower level light manipulation (async)
-async def toggle_light(index: int=1, isOn: bool=True):
-	await api_request.put( "/lights/" + str(index) + "/state", json.dumps({"on": isOn}))
+async def toggle_light(index: int = 1, isOn: bool = True):
+	await api_request.put( f"/lights/{index}/state", json.dumps({"on": isOn}))
 
 async def toggle_lights(isOn: bool=True):
 	for key in LIGHTS:
 		await toggle_light(key, isOn)
 
-async def set_light_RGB( index: int, r:int, g:int, b:int ):
+async def set_light_RGB( index: int, r: int, g: int, b: int ):
 	h, s, v = rgb_to_hsv(r, g, b)
-	payload = '{"sat":' + str(s) + ', "bri":' + str(v) + ', "hue":' + str(h) + '}'
+	payload = {"sat": s, "bri": v, "hue": h}
 
-	await api_request.put( "/lights/" + str(index) + "/state", payload )
+	await api_request.put( f"/lights/{index}/state", payload )
 
 # Normal functions
 def switch_light( index: int=1 ):
@@ -42,38 +42,38 @@ def switch_light( index: int=1 ):
 			curPower = LIGHTS[str(index)]["state"]["on"]
 			loop.run_until_complete( toggle_light(index, not curPower))
 	else:
-		print("Error: Light index '" + str(index) + "' out of range")
+		print(f"Error: Light index '{index}' out of range")
 
 def switch_lights():
 	for key in LIGHTS:
 		switch_light(key)
 
 # Light control
-def set_light_color( index:int, r:int, g:int, b:int ):
+def set_light_color( index: int, r: int, g: int, b: int ):
 	if( LIGHTS.get(str(index)) ):
 		loop.run_until_complete( set_light_RGB(index, r, g, b) )
 	else:
-		print("Error: Light index '" + str(index) + "' out of range")
+		print(f"Error: Light index '{index}' out of range")
 
-def set_light_brightness( index:int, b:int ):
+def set_light_brightness( index: int, b: int ):
 	if( LIGHTS.get(str(index)) ):
-		payload = '{"bri":' + str(b) + '}'
-		loop.run_until_complete( api_request.put( "/lights/" + str(index) + "/state", payload ) )
+		payload = {"bri": b}
+		loop.run_until_complete( api_request.put( f"/lights/{index}/state", payload ) )
 	else:
-		print("Error: Light index '" + str(index) + "' out of range")
+		print(f"Error: Light index '{index}' out of range")
 
-def set_brightness( b:int ):
+def set_brightness( b: int ):
 	for key in LIGHTS:
 		set_light_brightness( key, b )
 
-def set_all_lights_color( r:int, g:int, b:int ):
+def set_all_lights_color( r: int, g: int, b: int ):
 	for key in LIGHTS:
 		set_light_color( key, r, g, b )
 
-def power(isOn:bool=True): # Controlling the power of the lights
+def power(isOn: bool = True): # Controlling the power of the lights
 	loop.run_until_complete( toggle_lights(isOn) )
 
-def power_light( index:int, isOn:bool=True ):
+def power_light( index: int, isOn:bool = True ):
 	loop.run_until_complete( toggle_light( index, isOn ) )
 
 # Presets
@@ -89,9 +89,9 @@ def setLightPreset( index:int, p:str ):
 		else:
 			print("Error: Unknown preset '" + p + "'")
 	else:
-		print("Error: Light index '" + str(index) + "' out of range")
+		print(f"Error: Light index '{index}' out of range")
 
-def set_preset( presetID:str, index:int=-1 ):
+def set_preset( presetID: str, index: int = -1 ):
 	if( PRESETS.get(presetID) ):
 		if( index == -1 ):
 			for key in LIGHTS:
@@ -99,7 +99,7 @@ def set_preset( presetID:str, index:int=-1 ):
 		else:
 			setLightPreset( index, presetID )
 	else:
-		print("Error: Unknown preset '" + presetID + "'")
+		print(f"Error: Unknown preset '{presetID}'")
 
 def count_lights():
 	return len(LIGHTS)
